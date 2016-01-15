@@ -24,9 +24,11 @@ var settings = map[string]string{
 	"build_log":         "runner-build-errors.log",
 	"valid_ext":         ".go, .tpl, .tmpl, .html",
 	"build_delay":       "600",
+	"run_tests":         "1",
 	"colors":            "1",
 	"log_color_main":    "cyan",
 	"log_color_build":   "yellow",
+	"log_color_test":    "red",
 	"log_color_runner":  "green",
 	"log_color_watcher": "magenta",
 	"log_color_app":     "",
@@ -140,4 +142,8 @@ func buildDelay() time.Duration {
 	value, _ := strconv.Atoi(settings["build_delay"])
 
 	return time.Duration(value)
+}
+
+func shouldRunTests() string {
+	return settings["run_tests"]
 }

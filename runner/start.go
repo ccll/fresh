@@ -15,6 +15,7 @@ var (
 	watcherLog   logFunc
 	runnerLog    logFunc
 	buildLog     logFunc
+	testLog      logFunc
 	appLog       logFunc
 )
 
@@ -62,10 +63,23 @@ func start() {
 				}
 				createBuildErrorsLog(errorMessage)
 			} else {
-				if started {
-					stopChannel <- true
+				if shouldRunTests() == "1" {
+					errorMessage, ok := test()
+					if !ok {
+						mainLog("Test Failed: \n %s", errorMessage)
+						createBuildErrorsLog(errorMessage)
+					} else {
+						if started {
+							stopChannel <- true
+						}
+						run()
+					}
+				} else {
+					if started {
+						stopChannel <- true
+					}
+					run()
 				}
-				run()
 			}
 
 			started = true
@@ -84,6 +98,7 @@ func initLogFuncs() {
 	watcherLog = newLogFunc("watcher")
 	runnerLog = newLogFunc("runner")
 	buildLog = newLogFunc("build")
+	testLog = newLogFunc("test")
 	appLog = newLogFunc("app")
 }
 
